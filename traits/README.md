@@ -228,5 +228,5 @@ By treating the current notion of subtyping differently, we encounter a new way 
 The execution of this proposal may encounter a number of challenges. For example:
 
 - How would we deal with type promotions? For instance, how would we specify that `2 + 3.0` should know to to dispatch to `Num{Float64}`?
-- Where would one need to specify types to dispatch on, and where could it be inferred? (For example, in an `impl Foo{T}`, could one define `bar(x) = x` instead of `bar(x::T) = x`?)
+- Where would one need to specify types to dispatch on, and where could it be inferred? (For example, in an `implement Foo{T}`, could one define `bar(x) = x` instead of `bar(x::T) = x`?)
 - How could we, as a community, transition code which doesn't meet the new/official trait interface without excessive tedious work?

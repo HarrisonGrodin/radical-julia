@@ -108,7 +108,7 @@ trait Ordered{T}
     x > y = isless(y, x)
 end
 
-impl Ordered{Int}
+implement Ordered{Int}
     # implicitly:
     # import Ordered: isless, <, >
 
@@ -136,14 +136,14 @@ end
 ```
 Before running the `minmax` function on arguments of type `T`, we check that it they're reasonably orderable. Similarly, before running `biggest_two` on a vector containing type `T`, we check that `T` can be ordered.
 
-Can't this get tedious, though? Shouldn't some `impl` implementations be automatically generated? Of course - if a type `T` is equatable, `Vector{T}` should be, too:
+Can't this get tedious, though? Shouldn't some `implement` statements be automatically generated? Of course - if a type `T` is equatable, `Vector{T}` should be, too:
 ```julia
 trait Eq{T}
     x::T == y::T
     x::T != y::T = !(x == y)
 end
 
-impl Eq{Vector{T}} where Eq{T}
+implement Eq{Vector{T}} where Eq{T}
     function ==(xs::Vector{T}, ys::Vector{T})
         length(xs) == length(ys) || return false
         for i ∈ eachindex(xs)
@@ -163,9 +163,9 @@ trait Ordered{T} <: Eq{T}
 end
 ```
 
-This would require (or assume) that an implementation of `Eq{T}` is already defined when an instance of `Ordered{T}` is defined, allowing the functions within `Ordered{T}` (and any function which has `where Ordered{T}`) to safely make use of equality checking, too.
+This would require (or assume) that an implementation of `Eq{T}` is already defined when an instance of `Ordered{T}` is defined, allowing the functions within `Ordered{T}` (and any function which has `where Ordered{T}`) to safely make use of equality checking too.
 
-Look how much power this simple setup gets us! Here are some demonstrations of how some of the already-documented [Julia interfaces](https://docs.julialang.org/en/v1/manual/interfaces/index.html) coule be implemented:
+Look how much power this simple setup gets us! Here are some demonstrations of how some of the already-documented [Julia interfaces](https://docs.julialang.org/en/v1/manual/interfaces/index.html) could be implemented:
 ```julia
 trait Indexable{T}
     getindex(::T, inds...)
@@ -225,8 +225,8 @@ By treating the current notion of subtyping differently, we encounter a new way 
 - **Safety.** When designing a function, the developer can concisely and programmatically specify what functions it assumes are defined for the input. Implicit requirements about inputs can be made explicit.
 - **Clarity.** Since every value `x` will have exactly one type `T` (with exceptions of unions, etc.), there is little chance for runtime error due to dispatch ambiguity.
 
-Notably, this setup may encounter a number of challenges. For example:
+The execution of this proposal may encounter a number of challenges. For example:
 
-- How would we deal with type promotions? For example, how would `2 + 3.0` know to dispatch to `Num{Float64}`?
-- Where would one need to specify types to dispatch on, and where could it be inferred? (For example, in an `impl Foo{T}`, could one define `bar(x) = x` instead of `bar(x::T) = x`?)
+- How would we deal with type promotions? For instance, how would we specify that `2 + 3.0` should know to to dispatch to `Num{Float64}`?
+- Where would one need to specify types to dispatch on, and where could it be inferred? (For example, in an `implement Foo{T}`, could one define `bar(x) = x` instead of `bar(x::T) = x`?)
 - How could we, as a community, transition code which doesn't meet the new/official trait interface without excessive tedious work?
